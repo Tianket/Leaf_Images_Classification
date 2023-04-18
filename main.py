@@ -1,10 +1,9 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data as data
-import torchvision.transforms as transforms
 import torchvision.datasets as datasets
+from torch.utils.data import DataLoader
 
 import pandas as pd
 import numpy as np
@@ -16,10 +15,15 @@ import random
 import time
 
 #from net import Net
+from data import Dataset
+from train_and_test import test,train
 
-data_dir=pathlib.Path("./datasets")
-print(data_dir)
+################# Trash can #################
 
+lr=
+batch_size=64
+epoch=10
+folder="datasets"
 imgLabel = {
     'Apta' : 0,
     'Indian Rubber Tree' : 1,
@@ -33,15 +37,26 @@ imgLabel = {
     'Vilayati Chinch': 9
 }
 
-'''
-    'apta': [list(data_dir.glob('Apta/*'))[:1][0]] ,
-    'indian_rubber_tree': [list(data_dir.glob('Indian Rubber Tree/*'))[:1][0]] ,
-    'karanj': [list(data_dir.glob('Karanj/*'))[:1][0]] ,
-    'kashid': [list(data_dir.glob('Kashid/*'))[:1][0]] ,
-    'nilgiri': [list(data_dir.glob('Nilgiri/*'))[:1][0]],
-    'pimpal': [list(data_dir.glob('Pimpal/*'))[:1][0]],
-    'sita_ashok': [list(data_dir.glob('Sita Ashok/*'))[:1][0]],
-    'sonmohar': [list(data_dir.glob('Sonmohar/*'))[:1][0]],
-    'vad': [list(data_dir.glob('Vad/*'))[:1][0]],
-    'vilayati_chinch': [list(data_dir.glob('Vilayati Chinch/*'))[:1][0]]
-    '''
+################# Data into list #################
+
+whole_datasets=[]
+
+for categories in imgClass:
+    each_data_dir=pathlib.Path(folder,categories)
+    for each_image in each_data_dir.glob("*.jpg"):
+        whole_datasets.append(each_image)
+
+random.shuffle(whole_datasets)
+
+
+################# Data into list #################
+
+train_part=whole_datasets[:2500]
+test_part=whole_datasets[2500:]
+
+train_data=Dataset(imgLabel,train_part)
+test_data=Dataset(imgLabel,test_part)
+
+train_dataloader=DataLoader(train_data,batch_size,shuffle=True)
+test_dataloader=DataLoader(test_data,batch_size,shuffle=True)
+
